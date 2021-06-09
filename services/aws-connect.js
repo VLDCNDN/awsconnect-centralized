@@ -1,11 +1,17 @@
 const ENV = require("../config/env");
 const { AWSCONNECT } = require("../config/config");
-const { AssociateApprovedOriginCommand, AssociateApprovedOriginCommandInput } = require("@aws-sdk/client-connect");
+const { StartChatContactCommand } = require("@aws-sdk/client-connect");
 
 let initializeChat = async incomingData => {
-    const command = new AssociateApprovedOriginCommand({
+    const command = new StartChatContactCommand({
         InstanceId: ENV.CONNECT_INSTANCE_ID,
-        Origin: 'https://demo.palvision.com'
+        ContactFlowId: ENV.CONNECT_CONTACT_FLOW_ID,
+        ParticipantDetails: {
+            DisplayName: 'test local'
+        },
+        Attributes: {
+            Channel: "CHAT"
+        }
     });
     const response = await AWSCONNECT.send(command);
 
