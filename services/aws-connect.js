@@ -16,7 +16,7 @@ let initializeChat = async incomingData => {
     });
     const startChatResponse = await AWSCONNECT.send(command);
 
-    if(startChatResponse) {
+    if (startChatResponse) {
 
         const createParticipantCommand = new CreateParticipantConnectionCommand({
             ParticipantToken: startChatResponse.ParticipantToken,
@@ -28,7 +28,7 @@ let initializeChat = async incomingData => {
     }
 }
 
-let sendMessageToChat = async ({connectionToken, incomingData}) => {
+let sendMessageToChat = async ({ connectionToken, incomingData }) => {
     const sendMessageCommand = new SendMessageCommand({
         ConnectionToken: connectionToken,
         Content: incomingData.Body,
