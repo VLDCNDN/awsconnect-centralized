@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get('/test/credential/aws', function(req, res, next) {
+router.get('/test/aws', function(req, res, next) {
   const data = AWS.initializeChat();
 
   res.json({ title: 'Express' });

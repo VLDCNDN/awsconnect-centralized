@@ -1,6 +1,7 @@
 const ENV = require("../config/env");
-const { AWSCONNECT } = require("../config/config");
+const { AWSCONNECT, AWSCPC } = require("../config/config");
 const { StartChatContactCommand } = require("@aws-sdk/client-connect");
+const { CreateParticipantConnectionCommand } = require("@aws-sdk/client-connectparticipant");
 
 let initializeChat = async incomingData => {
     const command = new StartChatContactCommand({
@@ -13,9 +14,21 @@ let initializeChat = async incomingData => {
             Channel: "CHAT"
         }
     });
-    const response = await AWSCONNECT.send(command);
+    const startChatResponse = await AWSCONNECT.send(command);
 
-    console.log(response)
+    if(startChatResponse) {
+
+        const createParticipantCommand = new CreateParticipantConnectionCommand({
+            ParticipantToken: startChatResponse.ParticipantToken,
+            Type: ["WEBSOCKET", "CONNECTION_CREDENTIALS"]
+        });
+
+        const createParticipantResponse = await AWSCPC.send(createParticipantCommand);
+
+        console.log(createParticipantResponse)
+    } else {
+        console.log('empty');
+    }
 }
 
 module.exports = {
