@@ -13,25 +13,21 @@ router.get('/aws', async function (req, res, next) {
   const customerData = {
     From: ENV.CONNECT_SOURCE_NUMBER
   };
-  // const chat = AWS.sendMessageToChat({
-  //   connectionToken: data.ConnectionCredentials.ConnectionToken,
-  //   incomingData: {
-  //     Body: 'test1'
-  //   }
-  // });
+
   const existingSocket = Websocket.activeClientList.find(v => v.customerNumber === customerData.From)
 
   if(!existingSocket) {
     const connectInfo = await AWS.initializeChat();
+
     const socketData = {
       webSocketUrl: connectInfo.Websocket.Url,
-      customerNumber: customerData.From
+      customerNumber: customerData.From,
+      connectionToken: connectInfo.ConnectionCredentials.ConnectionToken
     }
-
+    
     Websocket.initializeConnection(socketData);
   }
 
-  res.json({ resp: '' });
 });
 
 module.exports = router;

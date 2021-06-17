@@ -18,11 +18,11 @@ const AWSCPC = new ConnectParticipantClient({
     }
 });
 
-// const TwilioClient = require("twilio")(
-//     ENV.TWILIO_ACCOUNT_SID,
-//     ENV.TWILIO_AUTH_TOKEN
-// );
+const TwilioClient = require("twilio")(
+    ENV.TWILIO_ACCOUNT_SID,
+    ENV.TWILIO_AUTH_TOKEN
+);
 
-module.exports = { AWSCONNECT, AWSCPC };
+module.exports = { AWSCONNECT, AWSCPC, TwilioClient };
 
 // module.exports = { AWS, TwilioClient };

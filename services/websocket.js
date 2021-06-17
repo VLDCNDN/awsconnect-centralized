@@ -1,4 +1,7 @@
 const WebSocket = require('ws');
+const AWSConnectService =  require("./aws-connect");
+const TwilioService = require("./twillio-client");
+const ENV = require("../config/env");
 
 let activeClientList = [];
 
@@ -17,8 +20,21 @@ let initializeConnection = awsConnectResponse => {
         }));
     });
 
-    ws.on('message', function incoming(message) {
-        console.log('received: %s', message);
+    ws.on('message', function incoming(e) {
+        const { content } = JSON.parse(e);
+        console.log("TEST", content);
+
+        if (typeof content === "string") {
+            const socketMessage = JSON.parse(content);
+            console.log("CONNECT::", socketMessage.ParticipantRole, "::", socketMessage.ContentType, "::", socketMessage.Content);
+            if(socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.joined" && socketMessage.ParticipantRole === "AGENT") {
+                AWSConnectService.sendMessageToChat({ connectionToken: awsConnectResponse.connectionToken, incomingData: { Body: "hello" } });
+            }
+
+            if (socketMessage.ContentType === "text/plain" && socketMessage.ParticipantRole === "AGENT") {
+                TwilioService.sendMessage(socketMessage.Content, ENV.CONNECT_SOURCE_NUMBER);
+            }
+        }
     });
 
     awsConnectResponse.client = ws;
