@@ -10,6 +10,8 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/aws', async function (req, res, next) {
+  
+  return;
   const customerData = {
     From: ENV.CONNECT_SOURCE_NUMBER
   };

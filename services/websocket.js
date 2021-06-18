@@ -22,7 +22,6 @@ let initializeConnection = awsConnectResponse => {
 
     ws.on('message', function incoming(e) {
         const { content } = JSON.parse(e);
-        console.log("TEST", content);
 
         if (typeof content === "string") {
             const socketMessage = JSON.parse(content);

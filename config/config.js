@@ -24,5 +24,3 @@ const TwilioClient = require("twilio")(
 );
 
 module.exports = { AWSCONNECT, AWSCPC, TwilioClient };
-
-// module.exports = { AWS, TwilioClient };
