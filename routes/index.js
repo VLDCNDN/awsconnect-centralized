@@ -3,14 +3,20 @@ var router = express.Router();
 const AWS = require("../services/aws-connect");
 const Websocket = require("../services/websocket");
 const ENV = require("../config/env");
+const db = require('../models');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
+  
   res.render('index', { title: 'Express' });
 });
 
-router.get('/aws', async function (req, res, next) {
+router.get('/test', function (req, res, next) {
   
+});
+
+router.get('/aws', async function (req, res, next) {
+  res.send({ test: 'test' });
   return;
   const customerData = {
     From: ENV.CONNECT_SOURCE_NUMBER
@@ -18,7 +24,7 @@ router.get('/aws', async function (req, res, next) {
 
   const existingSocket = Websocket.activeClientList.find(v => v.customerNumber === customerData.From)
 
-  if(!existingSocket) {
+  if (!existingSocket) {
     const connectInfo = await AWS.initializeChat();
 
     const socketData = {
@@ -26,7 +32,7 @@ router.get('/aws', async function (req, res, next) {
       customerNumber: customerData.From,
       connectionToken: connectInfo.ConnectionCredentials.ConnectionToken
     }
-    
+
     Websocket.initializeConnection(socketData);
   }
 
