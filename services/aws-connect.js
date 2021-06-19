@@ -1,5 +1,5 @@
 const ENV = require("../config/env");
-const { AWSCONNECT, AWSCPC } = require("../config/config");
+const { AWSCONNECT, AWSCPC } = require("../config/aws");
 const { StartChatContactCommand } = require("@aws-sdk/client-connect");
 const { CreateParticipantConnectionCommand, SendMessageCommand } = require("@aws-sdk/client-connectparticipant");
 
@@ -8,23 +8,32 @@ let initializeChat = async incomingData => {
         InstanceId: ENV.CONNECT_INSTANCE_ID,
         ContactFlowId: ENV.CONNECT_CONTACT_FLOW_ID,
         ParticipantDetails: {
-            DisplayName: 'test local'
+            DisplayName: incomingData.ProfileName
         },
         Attributes: {
             Channel: "CHAT"
         }
     });
-    const startChatResponse = await AWSCONNECT.send(command);
 
-    if (startChatResponse) {
+    const startChatContactResponse = await AWSCONNECT.send(command);
+
+    if (startChatContactResponse) {
 
         const createParticipantCommand = new CreateParticipantConnectionCommand({
-            ParticipantToken: startChatResponse.ParticipantToken,
+            ParticipantToken: startChatContactResponse.ParticipantToken,
             Type: ["WEBSOCKET", "CONNECTION_CREDENTIALS"]
         });
 
         const createParticipantResponse = await AWSCPC.send(createParticipantCommand);
-        return createParticipantResponse;
+
+        return {
+            awsContactId: startChatContactResponse.ContactId,
+            awsParticipantId: startChatContactResponse.ParticipantId,
+            awsConnectionToken: createParticipantResponse.ConnectionCredentials.ConnectionToken,
+            awsConnectionExpiry: createParticipantResponse.ConnectionCredentials.Expiry,
+            awsWebsocketUrl: createParticipantResponse.Websocket.Url,
+            awsWebsocketExpiry: createParticipantResponse.Websocket.ConnectionExpiry
+        };
     }
 }
 

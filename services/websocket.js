@@ -25,6 +25,8 @@ let initializeConnection = awsConnectResponse => {
 
         if (typeof content === "string") {
             const socketMessage = JSON.parse(content);
+            console.log(socketMessage);
+            return;
             console.log("CONNECT::", socketMessage.ParticipantRole, "::", socketMessage.ContentType, "::", socketMessage.Content);
             if(socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.joined" && socketMessage.ParticipantRole === "AGENT") {
                 AWSConnectService.sendMessageToChat({ connectionToken: awsConnectResponse.connectionToken, incomingData: { Body: "hello" } });

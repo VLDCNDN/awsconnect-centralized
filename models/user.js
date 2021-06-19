@@ -15,12 +15,13 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.init({
     customerName: DataTypes.STRING,
-    initialMessage: DataTypes.STRING,
+    customerInitialMessage: DataTypes.STRING,
     customerNumber: DataTypes.STRING,
-    contactId: DataTypes.STRING,
-    participantId: DataTypes.STRING,
-    connectionToken: DataTypes.TEXT,
-    connectionExpiry: DataTypes.TEXT
+    customerIdentifier: DataTypes.STRING,
+    awsContactId: DataTypes.STRING,
+    awsParticipantId: DataTypes.STRING,
+    awsConnectionToken: DataTypes.STRING,
+    awsConnectionExpiry: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',

@@ -11,23 +11,26 @@ module.exports = {
       customerName: {
         type: Sequelize.STRING
       },
-      initialMessage: {
+      customerInitialMessage: {
         type: Sequelize.STRING
       },
       customerNumber: {
         type: Sequelize.STRING
       },
-      contactId: {
+      customerIdentifier: {
         type: Sequelize.STRING
       },
-      participantId: {
+      awsContactId: {
         type: Sequelize.STRING
       },
-      connectionToken: {
-        type: Sequelize.TEXT
+      awsParticipantId: {
+        type: Sequelize.STRING
       },
-      connectionExpiry: {
-        type: Sequelize.TEXT
+      awsConnectionToken: {
+        type: Sequelize.STRING
+      },
+      awsConnectionExpiry: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
