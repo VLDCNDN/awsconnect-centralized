@@ -3,38 +3,38 @@ const router = express.Router();
 const db = require('../models');
 const AWS = require("../services/aws-connect");
 const Websocket = require("../services/websocket");
+const TwilioService = require("../services/twillio-client.js");
 
 router.post('/', async function (req, res, next) {
     try {
         const { body: incomingData } = req;
 
+        const customer = await db.User.findOne({ where: { customerNumber: incomingData.From } });
+        const existingCustomerSocket = Websocket.activeClientList.find(s => s.customerNumber === incomingData.From);
 
-        const customer = await db.User.findOne({ where: { customerNumber: incomingData.WaId } });
-
-        if (customer === null || new Date(customer.awsConnectionExpiry) < new Date()) {
+        if (!existingCustomerSocket || customer === null || (customer !== null && new Date(customer.awsConnectionExpiry) < new Date())) {
             const connectionInfo = await AWS.initializeChat(incomingData);
             const userParam = {
                 customerName: incomingData.ProfileName,
                 customerInitialMessage: incomingData.Body,
-                customerNumber: incomingData.WaId,
+                customerNumber: incomingData.From,
                 customerIdentifier: incomingData.AccountSid,
                 awsContactId: connectionInfo.awsContactId,
                 awsParticipantId: connectionInfo.awsParticipantId,
                 awsConnectionToken: connectionInfo.awsConnectionToken,
-                awsConnectionExpiry: connectionInfo.awsConnectionExpiry
-            };
-
-            const user = await db.User.create(userParam);
-            const socketData = {
+                awsConnectionExpiry: connectionInfo.awsConnectionExpiry,
                 webSocketUrl: connectionInfo.awsWebsocketUrl,
-                customerNumber: incomingData.WaId,
-                customerName: incomingData.ProfileName
             };
 
-            user && WebSocket.initializeConnection(socketData);
+            if (customer) {
+                userParam.id = customer.id;
+            }
+
+            const user = await db.User.upsert(userParam);
+            user && Websocket.initializeConnection(userParam);
 
         } else {
-            console.log("SUCESS::customer", customer);
+            const sentMessage = await AWS.sendMessageToChat({ connectionToken: customer.awsConnectionToken, incomingData: incomingData });
         }
 
     } catch (err) {
@@ -45,6 +45,10 @@ router.post('/', async function (req, res, next) {
 
 router.post("/status-callback", function (req, res) {
     res.sendStatus(204);
+});
+
+router.post("/sendtest", function (req, res) {
+    TwilioService.sendMessage(req.body.message, req.body.num);
 });
 
 

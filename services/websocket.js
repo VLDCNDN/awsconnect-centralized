@@ -25,21 +25,19 @@ let initializeConnection = awsConnectResponse => {
 
         if (typeof content === "string") {
             const socketMessage = JSON.parse(content);
-            console.log(socketMessage);
-            return;
             console.log("CONNECT::", socketMessage.ParticipantRole, "::", socketMessage.ContentType, "::", socketMessage.Content);
             if(socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.joined" && socketMessage.ParticipantRole === "AGENT") {
-                AWSConnectService.sendMessageToChat({ connectionToken: awsConnectResponse.connectionToken, incomingData: { Body: "hello" } });
+                AWSConnectService.sendMessageToChat({ connectionToken: awsConnectResponse.awsConnectionToken, incomingData: { Body: awsConnectResponse.customerInitialMessage } });
             }
 
             if (socketMessage.ContentType === "text/plain" && socketMessage.ParticipantRole === "AGENT") {
-                TwilioService.sendMessage(socketMessage.Content, ENV.CONNECT_SOURCE_NUMBER);
+                TwilioService.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
             }
         }
     });
 
     awsConnectResponse.client = ws;
-    const socketExist = activeClientList.find(v => v.customerNumber === masterConnectData.From);
+    const socketExist = activeClientList.find(v => v.customerNumber === awsConnectResponse.customerNumber);
     !socketExist && activeClientList.push(awsConnectResponse);
 
 }
