@@ -39,6 +39,9 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      source: {
+        type: Sequelize.STRING
       }
     });
   },

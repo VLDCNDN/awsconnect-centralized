@@ -35,12 +35,14 @@ router.post('/', async function (req, res, next) {
             }
 
             const user = await db.User.upsert(userParam);
-            console.log("telegram::working");
+            console.log("test");
+            return user;
             // return;
             // user && Websocket.initializeConnection(userParam);
 
         } else {
-            const sentMessage = await AWS.sendMessageToChat({ connectionToken: customer.awsConnectionToken, incomingData: { Body : incomingData.message.text} });
+            // const sentMessage = await AWS.sendMessageToChat({ connectionToken: customer.awsConnectionToken, incomingData: { Body : incomingData.message.text} });
+            console.log("existing");
         }
 
     } catch (err) {
@@ -49,5 +51,11 @@ router.post('/', async function (req, res, next) {
 });
 
 router.post('/setWebhooks', Telegram.setWebhooks);
+
+router.post('/samplesend', async function (req, res, next) {
+    const resp = await Telegram.sendMessage("tset", 1847652854);
+
+    res.send(resp);
+});
 
 module.exports = router;

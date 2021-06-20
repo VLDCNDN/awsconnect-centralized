@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     awsContactId: DataTypes.STRING,
     awsParticipantId: DataTypes.STRING,
     awsConnectionToken: DataTypes.STRING,
-    awsConnectionExpiry: DataTypes.STRING
+    awsConnectionExpiry: DataTypes.STRING,
+    source: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',
