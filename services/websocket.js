@@ -1,6 +1,7 @@
 const WebSocket = require('ws');
-const AWSConnectService =  require("./aws-connect");
+const AWSConnectService = require("./aws-connect");
 const TwilioService = require("./twillio-client");
+const TelegramService = require("./telegram");
 const ENV = require("../config/env");
 
 let activeClientList = [];
@@ -26,12 +27,16 @@ let initializeConnection = awsConnectResponse => {
         if (typeof content === "string") {
             const socketMessage = JSON.parse(content);
             console.log("CONNECT::", socketMessage.ParticipantRole, "::", socketMessage.ContentType, "::", socketMessage.Content);
-            if(socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.joined" && socketMessage.ParticipantRole === "AGENT") {
+            if (socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.joined" && socketMessage.ParticipantRole === "AGENT") {
                 AWSConnectService.sendMessageToChat({ connectionToken: awsConnectResponse.awsConnectionToken, incomingData: { Body: awsConnectResponse.customerInitialMessage } });
             }
 
             if (socketMessage.ContentType === "text/plain" && socketMessage.ParticipantRole === "AGENT") {
-                TwilioService.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
+                if (awsConnectResponse.source === "twilio") {
+                    TwilioService.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
+                } else if (awsConnectResponse.source === "telegram") {
+                    TelegramService.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
+                }
             }
         }
     });

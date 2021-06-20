@@ -12,7 +12,7 @@ router.post('/', async function (req, res, next) {
         const customer = await db.User.findOne({ where: { customerNumber: incomingData.From } });
         const existingCustomerSocket = Websocket.activeClientList.find(s => s.customerNumber === incomingData.From);
 
-        if (!existingCustomerSocket || customer === null || (customer !== null && new Date(customer.awsConnectionExpiry) < new Date())) {
+        if (customer === null || !existingCustomerSocket || (customer !== null && new Date(customer.awsConnectionExpiry) < new Date())) {
             const connectionInfo = await AWS.initializeChat(incomingData);
             const userParam = {
                 customerName: incomingData.ProfileName,
@@ -24,6 +24,7 @@ router.post('/', async function (req, res, next) {
                 awsConnectionToken: connectionInfo.awsConnectionToken,
                 awsConnectionExpiry: connectionInfo.awsConnectionExpiry,
                 webSocketUrl: connectionInfo.awsWebsocketUrl,
+                source: "twilio"
             };
 
             if (customer) {
