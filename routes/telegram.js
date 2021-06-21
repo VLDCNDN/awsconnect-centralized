@@ -7,13 +7,14 @@ const Telegram = require("../services/telegram");
 
 /**
  * Before running this make sure to run /setWebhooks
+ * NOTE: always return status to prevent telegram to send the same update
  */
 router.post('/', async function (req, res, next) {
     try {
-        const { body: incomingData } = req;
 
+        const { body: incomingData } = req;
         const customer = await db.User.findOne({ where: { customerNumber: incomingData.message.chat.id } });
-        const existingCustomerSocket = Websocket.activeClientList.find(s => s.customerNumber === incomingData.From);
+        const existingCustomerSocket = Websocket.activeClientList.find(s => s.customerNumber === incomingData.message.chat.id);
 
         if (customer === null || !existingCustomerSocket ||  (customer !== null && new Date(customer.awsConnectionExpiry) < new Date())) {
             const connectionInfo = await AWS.initializeChat({ ProfileName : incomingData.message.chat.first_name});
@@ -35,18 +36,18 @@ router.post('/', async function (req, res, next) {
             }
 
             const user = await db.User.upsert(userParam);
-            console.log("test");
-            return user;
-            // return;
-            // user && Websocket.initializeConnection(userParam);
-
+            console.log("test" , "::", incomingData);
+            // Websocket.initializeConnection(userParam);
+         
         } else {
             // const sentMessage = await AWS.sendMessageToChat({ connectionToken: customer.awsConnectionToken, incomingData: { Body : incomingData.message.text} });
             console.log("existing");
         }
 
+        res.sendStatus(200);
     } catch (err) {
         console.log("Error::routes/telegram/", err);
+        res.sendStatus(200);
     }
 });
 
