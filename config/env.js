@@ -12,6 +12,7 @@ module.exports = {
     TELEGRAM_URL: process.env.TELEGRAM_URL,
     TELEGRAM_TOKEN: process.env.TELEGRAM_TOKEN,
     FB_VERIFY_TOKEN: process.env.FB_VERIFY_TOKEN,
-    FB_ACCESS_TOKEN: process.env.FB_ACCESS_TOKEN
+    FB_ACCESS_TOKEN: process.env.FB_ACCESS_TOKEN,
+    VIBER_TOKEN: process.env.VIBER_TOKEN
   };
   

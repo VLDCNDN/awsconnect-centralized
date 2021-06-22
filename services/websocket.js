@@ -1,8 +1,9 @@
 const WebSocket = require('ws');
+const ENV = require("../config/env");
 const AWSConnectService = require("./aws-connect");
 const TwilioService = require("./twillio-client");
 const TelegramService = require("./telegram");
-const ENV = require("../config/env");
+const Viber = require("./viber");
 
 let activeClientList = [];
 
@@ -27,6 +28,7 @@ let initializeConnection = awsConnectResponse => {
         if (typeof content === "string") {
             const socketMessage = JSON.parse(content);
             console.log("CONNECT::", socketMessage.ParticipantRole, "::", socketMessage.ContentType, "::", socketMessage.Content);
+            console.log("SOCKETFULL::",socketMessage);
             if (socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.joined" && socketMessage.ParticipantRole === "AGENT") {
                 AWSConnectService.sendMessageToChat({ connectionToken: awsConnectResponse.awsConnectionToken, incomingData: { Body: awsConnectResponse.customerInitialMessage } });
             }
@@ -36,6 +38,10 @@ let initializeConnection = awsConnectResponse => {
                     TwilioService.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
                 } else if (awsConnectResponse.source === "telegram") {
                     TelegramService.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
+                } else if (awsConnectResponse.source === "facebook") {
+
+                } else if (awsConnectResponse.source === "viber") {
+                    Viber.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
                 }
             }
         }

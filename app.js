@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config()
+var { ViberBotClient } = require("./config/aws");
 
 var indexRouter = require('./routes/index');
 
@@ -15,5 +16,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+
 
 module.exports = app;

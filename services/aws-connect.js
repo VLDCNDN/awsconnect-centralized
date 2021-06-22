@@ -45,8 +45,6 @@ let sendMessageToChat = async ({ connectionToken, incomingData }) => {
     });
 
     const response = await AWSCPC.send(sendMessageCommand);
-
-    console.log(response);
 }
 
 module.exports = {
