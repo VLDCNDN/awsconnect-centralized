@@ -7,5 +7,8 @@ const ENV = require("../config/env");
 
 router.post('/', async function (req, res, next) {
     let body = req.body;
-    console.log(body);
+    console.log("VIBERTeST::", body);
+    res.status(200).send('EVENT_RECEIVED');
 });
+
+module.exports = router;
