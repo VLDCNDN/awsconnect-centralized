@@ -6,5 +6,7 @@ router.use('/twilio', require('./twilio'));
 router.use('/telegram', require('./telegram'));
 router.use('/facebook', require('./fbmessenger'));
 router.use('/viber', require('./viber'));
+router.use('/dialogflow', require('./viber'));
+router.use('/test', require('./test'));
 
 module.exports = router;
