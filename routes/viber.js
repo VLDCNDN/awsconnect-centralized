@@ -31,10 +31,10 @@ router.post('/', async function (req, res, next) {
             }
 
             const user = await db.User.upsert(userParam);
-            // Websocket.initializeConnection(userParam);
+            Websocket.initializeConnection(userParam);
 
         } else {
-            // const sentMessage = await AWS.sendMessageToChat({ connectionToken: customer.awsConnectionToken, incomingData: { Body : body.message.text} });
+            const sentMessage = await AWS.sendMessageToChat({ connectionToken: customer.awsConnectionToken, incomingData: { Body : body.message.text} });
             // send message here
             console.log("/viber/ :: EXISTING USER", sentMessage);
         }

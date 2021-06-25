@@ -1,7 +1,7 @@
 const ENV = require("../config/env");
 const axios = require("axios");
 
-let sendMessage = function (content, customerNumber) {
+let sendMessage = function (content, customerNumber, awsAgentName) {
     let config = {
         headers: {
             "X-Viber-Auth-Token": ENV.VIBER_TOKEN,
@@ -13,7 +13,7 @@ let sendMessage = function (content, customerNumber) {
             receiver: customerNumber,
             min_api_version: 1,
             sender: {
-                name: "Palconnect",
+                name: awsAgentName,
                 avatar: "https://www.palvision.com/wp-content/uploads/2020/11/palvision-logo-R.png"
             },
             tracking_data: "tracking data",

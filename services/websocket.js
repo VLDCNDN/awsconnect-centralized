@@ -32,6 +32,9 @@ let initializeConnection = awsConnectResponse => {
             if (socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.joined" && socketMessage.ParticipantRole === "AGENT") {
                 AWSConnectService.sendMessageToChat({ connectionToken: awsConnectResponse.awsConnectionToken, incomingData: { Body: awsConnectResponse.customerInitialMessage } });
             }
+            if (socketMessage.ContentType === "application/vnd.amazonaws.connect.event.participant.left" && socketMessage.ParticipantRole === "AGENT") {
+
+            }
 
             if (socketMessage.ContentType === "text/plain" && socketMessage.ParticipantRole === "AGENT") {
                 if (awsConnectResponse.source === "twilio") {
@@ -39,9 +42,10 @@ let initializeConnection = awsConnectResponse => {
                 } else if (awsConnectResponse.source === "telegram") {
                     TelegramService.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
                 } else if (awsConnectResponse.source === "facebook") {
-
+                    
                 } else if (awsConnectResponse.source === "viber") {
-                    Viber.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber);
+                    let awsAgentName = "(" + socketMessage.ParticipantRole + ") " + socketMessage.DisplayName;
+                    Viber.sendMessage(socketMessage.Content, awsConnectResponse.customerNumber, awsAgentName);
                 }
             }
         }
