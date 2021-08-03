@@ -13,6 +13,7 @@ module.exports = {
     TELEGRAM_TOKEN: process.env.TELEGRAM_TOKEN,
     FB_VERIFY_TOKEN: process.env.FB_VERIFY_TOKEN,
     FB_ACCESS_TOKEN: process.env.FB_ACCESS_TOKEN,
-    VIBER_TOKEN: process.env.VIBER_TOKEN
+    VIBER_TOKEN: process.env.VIBER_TOKEN,
+    DF_PROJECT_ID: process.env.DF_PROJECT_ID
   };
   
