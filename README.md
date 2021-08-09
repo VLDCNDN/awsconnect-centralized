@@ -1,5 +1,5 @@
 # awsconnect-centralized
-Centralized 3rd party apps Messages to AWS Connect
+Consolidate 3rd party apps Messages to AWS Connect
 
 Third Party Apps Supported:
 - WhatsApp (Twilio)
